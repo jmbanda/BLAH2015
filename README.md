@@ -30,3 +30,16 @@ Output file will be (for this case) test_lines.xml-CHEBI-dic.csv.txt. This tool 
 <h2> test_lines.xml </h2>
 
 We have included the test_lines.xml file with one randomly selected Euro-pubmed article abstract inside of it. 
+
+<h2> Dictionaries </h2>
+
+We have included dictionaries for the following ontologies:
+<code>
+CHEBI  <https://github.com/jmbanda/BLAH2015/blob/master/CHEBI-dic.csv>
+FMA <https://github.com/jmbanda/BLAH2015/blob/master/FMA-dic.csv>
+PATO <https://github.com/jmbanda/BLAH2015/blob/master/PATO-dic.csv>
+PHENOMINER <https://github.com/jmbanda/BLAH2015/blob/master/PHENOM-dic.csv>
+RXNORM <https://github.com/jmbanda/BLAH2015/blob/master/RXNORM-dic.csv>
+</code>
+
+
