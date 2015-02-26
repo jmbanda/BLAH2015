@@ -12,6 +12,14 @@ python NCBOannotate.py RXNORM,CHEBI test_lines.xml
 
 Output file will be (for this case) test_lines.xml.out
 
-If you are trying to specify more than one ontology, you need to add it with a comma. 
+If you are trying to specify more than one ontology, you need to add it with a comma. We have included the test_lines.xml file with one randomly selected Euro-pubmed article abstract inside of it. 
+
+dictionary_annotate.py
+
+This tool will use a dictionary to annotate any given text.
+
+Execution call:
+
+
 
 
