@@ -1,18 +1,20 @@
 #####################################################################
-#####                                            				        #####
-#####            BLAH 2015 - NBCO Annotate Abstracts            #####
-#####							                                              #####
+#####################################################################
+#####                        				#############
+#####            BLAH 2015 - NBCO Annotate Text         #############
+#####            By. Juan M. Banda                      #############
+#####							#############
 #####################################################################
 
 import urllib2
 import json
+import sys
 import time
 import random
 import os
-from pprint import pprint
 
 REST_URL = "http://data.bioontology.org"
-API_KEY = "197de257-9b62-4da6-baaf-ddcad5783e18" #Replace with your own API key from Bioportal
+API_KEY = "8b5b7825-538d-40e0-9e9e-5ab9274a9aeb" #Replace with your own API key from Bioportal
 
 
 #Functions to get bioportal results
@@ -37,42 +39,52 @@ def splitIterator(text, size):
         yield text[start:start + size]
 
 
+ontologies = str(sys.argv[1])
+text_file = str(sys.argv[2])
 #Input = lines.xml - Document that contains document id, pmcid (sometimeS) and abstract tags  of the documents to annotate
-f= open('lines.xml', 'r')
-#Output = annotated_files.txt - Document that contains the id, pmcid, rxcui in this case and preflabel of the RxNorm terms found
-ftw= open('annotated_files.txt','w')
-c=0
+f= open(str(text_file), 'r')
+#Output = annotated_files.txt - Document that contains the id, pmcid, ID, prefLabel, ontology, from, to, type
+ftw= open(str(text_file)+".out",'w')
 for line in f.xreadlines():
    id_id  = str(find_between(line,'<id>','</id>'))
    pmc_id = str(find_between(line,'<pmcid>','</pmcid>'))
    document_abstract=str(find_between(line,'<abstractText>','</abstractText>'))
-   if len(document_abstract) >= 4000:
-	splits=int(len(document_abstract)/1500)
+   if len(document_abstract) >= 4000: #Avoid pasisng very long strings
+	splits=int(len(document_abstract)/1500) #!500 is a good hardcoded limit to split if text is too big
 	parts=splitIterator(document_abstract, 1500)
 	for single_part in parts:
-		time.sleep(random.randint(1, 3)) #This timer is needed or the NCBO api will time you out
-        	annotations = get_json(REST_URL + "/annotator?ontologies=RXNORM&longest_only=true&text=" + urllib2.quote(single_part))
+		time.sleep(random.randint(1, 2)) #This timer is needed or the NCBO api will time you out
+        	annotations = get_json(REST_URL + "/annotator?ontologies=" + ontologies + "&longest_only=true&text=" + urllib2.quote(single_part))
 	        for result in annotations:
 			time.sleep(random.randint(2, 7)) #Longer timer to not get blocked by the API
 			try:
                 		class_details1 = get_json(result["annotatedClass"]["links"]["self"])
 		                ids=class_details1["@id"]
-                		rxcui=ids[44:]
 	                	prefLabel=class_details1["prefLabel"]
-	        	        ftw.write(str(id_id) + "\t" + str(pmc_id) + "\t" + str(rxcui) + "\t" + str(prefLabel) + "\n")
+				ontology=class_details1["links"]["ontology"]
+
+			        for annotation in result["annotations"]:
+			            a_from= str(annotation["from"])
+			            a_to= str(annotation["to"])
+			            a_type= annotation["matchType"]
+	        	        ftw.write(str(id_id) + "\t" + str(pmc_id) + "\t" + str(ids) + "\t" + str(prefLabel) + "\t" + str(ontology) + "\t" + str(a_from) +"\t" + str(a_to) + "\t" + str(a_type) + "\n")
 			except:
-				#print "Empty Result set" - No annotations to be made by the annotator
+				print "Connection / Formatting issues" #- No annotations to be made by the annotator
    else: 
-	annotations = get_json(REST_URL + "/annotator?ontologies=RXNORM&longest_only=true&text=" + urllib2.quote(document_abstract))
+	annotations = get_json(REST_URL + "/annotator?ontologies=" + ontologies  + "&longest_only=true&text=" + urllib2.quote(document_abstract))
    	for result in annotations:
-		time.sleep(random.randint(1, 4))
+		time.sleep(random.randint(1, 2))
 		try:
 	        	class_details1 = get_json(result["annotatedClass"]["links"]["self"])
         		ids=class_details1["@id"]
-			rxcui=ids[44:]
 			prefLabel=class_details1["prefLabel"]
-			ftw.write(str(id_id) + "\t" + str(pmc_id) + "\t" + str(rxcui) + "\t" + str(prefLabel) + "\n")
+			ontology=class_details1["links"]["ontology"]
+                        for annotation in result["annotations"]:
+                            a_from= str(annotation["from"])
+                            a_to= str(annotation["to"])
+                            a_type= annotation["matchType"]
+			ftw.write(str(id_id) + "\t" + str(pmc_id) + "\t" + str(ids) + "\t" + str(prefLabel) + "\t" + str(ontology) + "\t" + str(a_from) +"\t" + str(a_to) + "\t" + str(a_type) + "\n")
 		except:
-			#print "Empty Result set" - No annotations to be made by the annotator
+			print "Connection / Formatting issues" #- No annotations to be made by the annotator
 f.close()
 ftw.close()
