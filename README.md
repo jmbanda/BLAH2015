@@ -35,8 +35,6 @@ We have included the test_lines.xml file with one randomly selected Euro-pubmed 
 
 We have included dictionaries for the following ontologies:
 
-<code>
-
 CHEBI (https://github.com/jmbanda/BLAH2015/blob/master/CHEBI-dic.csv)
 
 FMA (https://github.com/jmbanda/BLAH2015/blob/master/FMA-dic.csv)
@@ -46,7 +44,3 @@ PATO (https://github.com/jmbanda/BLAH2015/blob/master/PATO-dic.csv)
 PHENOMINER (https://github.com/jmbanda/BLAH2015/blob/master/PHENOM-dic.csv)
 
 RXNORM (https://github.com/jmbanda/BLAH2015/blob/master/RXNORM-dic.csv)
-
-</code>
-
-
